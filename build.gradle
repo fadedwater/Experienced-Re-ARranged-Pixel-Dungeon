@@ -21,9 +21,9 @@ allprojects {
         appPackageName = 'com.rearrangedpixel.rearrangedpixeldungon'
 
         appVersionCode = 802
-        appVersionName = '2.5.4'
-        appVersionCode += 38
-        appVersionName += '_based_3.21.0'
+        appVersionName = '3.21.0'
+        appVersionCode += 39
+        appVersionName += '_based_fort-1.0'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
