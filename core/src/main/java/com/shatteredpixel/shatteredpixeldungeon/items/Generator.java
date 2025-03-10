@@ -492,7 +492,7 @@ public class Generator {
 					ScrollOfTerror.class,
 					ScrollOfTransmutation.class
 			};
-			SCROLL.defaultProbs  = new float[]{ 0, 3, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1 };
+			SCROLL.defaultProbs  = new float[]{ 2, 3, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1 };
 			SCROLL.defaultProbs2 = new float[]{ 0, 3, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0 };
 			SCROLL.probs = SCROLL.defaultProbs.clone();
 			

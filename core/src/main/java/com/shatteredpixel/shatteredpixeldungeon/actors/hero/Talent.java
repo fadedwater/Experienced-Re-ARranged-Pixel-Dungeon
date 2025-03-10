@@ -69,7 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TalentSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.NewSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.BulletItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Sheath;
@@ -1324,7 +1324,7 @@ public enum Talent {
 		//warrior
 		//for metamorphosis
 		if (talent == IRON_WILL && hero.heroClass != HeroClass.WARRIOR){
-			Buff.affect(hero, BrokenSeal.WarriorShield.class);
+			Buff.affect(hero, NewSeal.WarriorShield.class);
 		}
 
 		if (talent == VETERANS_INTUITION && hero.pointsInTalent(VETERANS_INTUITION) == 2){
@@ -1611,7 +1611,7 @@ public enum Talent {
 	public static void onPotionUsed( Hero hero, int cell, float factor ){
 		if (hero.hasTalent(LIQUID_WILLPOWER)){
 			if (hero.heroClass == HeroClass.WARRIOR) {
-				BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
+				NewSeal.WarriorShield shield = hero.buff(NewSeal.WarriorShield.class);
 				if (shield != null) {
 					// 50/75% of total shield
 					int shieldToGive = Math.round(factor * shield.maxShield() * 0.25f * (1 + hero.pointsInTalent(LIQUID_WILLPOWER)));

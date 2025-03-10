@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.items;
+package com.shatteredpixel.shatteredpixeldungeon.items.seals;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -46,7 +47,7 @@ import com.watabou.utils.Bundle;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class BrokenSeal extends Item {
+public class NewSeal extends Item {
 
 	public static final String AC_AFFIX = "AFFIX";
 
@@ -54,7 +55,7 @@ public class BrokenSeal extends Item {
 	public static final String AC_INFO = "INFO_WINDOW";
 
 	{
-		image = ItemSpriteSheet.SEAL;
+		image = ItemSpriteSheet.NEW_SEAL;
 
 		cursedKnown = levelKnown = true;
 		unique = true;
@@ -112,7 +113,8 @@ public class BrokenSeal extends Item {
 		if (action.equals(AC_AFFIX)){
 			curItem = this;
 			GameScene.selectItem(armorSelector);
-		} else if (action.equals(AC_INFO)) {
+		}
+		else if (action.equals(AC_INFO)) {
 			GameScene.show(new WndUseItem(null, this));
 		}
 	}
@@ -129,20 +131,25 @@ public class BrokenSeal extends Item {
 			info += "\n\n" + Messages.get(this, "inscribed", glyph.name());
 			info += " " + glyph.desc();
 		}
+		if (Dungeon.hero.belongings.getItem(BerserkerSeal.class) != null ||
+				Dungeon.hero.belongings.getItem(VeteranSeal.class) != null ||
+				Dungeon.hero.belongings.getItem(GladiatorSeal.class) != null){
+			info += "\n\n" + Messages.get(this,"nerfedby");
+		}
 		return info;
 	}
 
 	@Override
 	//scroll of upgrade can be used directly once, same as upgrading armor the seal is affixed to then removing it.
 	public boolean isUpgradable() {
-		return level() == 0;
+		return level() <= 3;
 	}
 
 	protected static WndBag.ItemSelector armorSelector = new WndBag.ItemSelector() {
 
 		@Override
 		public String textPrompt() {
-			return  Messages.get(BrokenSeal.class, "prompt");
+			return  Messages.get(NewSeal.class, "prompt");
 		}
 
 		@Override
@@ -157,20 +164,20 @@ public class BrokenSeal extends Item {
 
 		@Override
 		public void onSelect( Item item ) {
-			BrokenSeal seal = (BrokenSeal) curItem;
-			if (item != null && item instanceof Armor) {
+			NewSeal seal = (NewSeal) curItem;
+			if (item instanceof Armor) {
 				Armor armor = (Armor)item;
 				if (!armor.levelKnown){
-					GLog.w(Messages.get(BrokenSeal.class, "unknown_armor"));
-
-				} else if (armor.cursed && (seal.getGlyph() == null || !seal.getGlyph().curse())){
-					GLog.w(Messages.get(BrokenSeal.class, "cursed_armor"));
-
-				} else if (armor.glyph != null && seal.getGlyph() != null
+					GLog.w(Messages.get(NewSeal.class, "unknown_armor"));
+				}
+				else if (armor.cursed && (seal.getGlyph() == null || !seal.getGlyph().curse())){
+					GLog.w(Messages.get(NewSeal.class, "cursed_armor"));
+				}
+				else if (armor.glyph != null && seal.getGlyph() != null
 						&& armor.glyph.getClass() != seal.getGlyph().getClass()) {
 					GameScene.show(new WndOptions(new ItemSprite(seal),
-							Messages.get(BrokenSeal.class, "choose_title"),
-							Messages.get(BrokenSeal.class, "choose_desc"),
+							Messages.get(NewSeal.class, "choose_title"),
+							Messages.get(NewSeal.class, "choose_desc"),
 							armor.glyph.name(),
 							seal.getGlyph().name()){
 						@Override
@@ -178,7 +185,7 @@ public class BrokenSeal extends Item {
 							if (index == 0) seal.setGlyph(null);
 							//if index is 1, then the glyph transfer happens in affixSeal
 
-							GLog.p(Messages.get(BrokenSeal.class, "affix"));
+							GLog.p(Messages.get(NewSeal.class, "affix"));
 							Dungeon.hero.sprite.operate(Dungeon.hero.pos);
 							Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
 							armor.affixSeal(seal);
@@ -186,11 +193,12 @@ public class BrokenSeal extends Item {
 						}
 					});
 
-				} else {
-					GLog.p(Messages.get(BrokenSeal.class, "affix"));
+				}
+				else {
+					GLog.p(Messages.get(NewSeal.class, "affix"));
 					Dungeon.hero.sprite.operate(Dungeon.hero.pos);
 					Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
-					armor.affixSeal((BrokenSeal)curItem);
+					armor.affixSeal((NewSeal)curItem);
 					curItem.detach(Dungeon.hero.belongings.backpack);
 				}
 			}
@@ -219,10 +227,15 @@ public class BrokenSeal extends Item {
 		@Override
 		public synchronized boolean act() {
 			if (Regeneration.regenOn() && shielding() < maxShield()) {
-				float shield = 1/30f;
+				float shield = 1/25f;
 				Berserk buff = target.buff(Berserk.class);
 				if (buff != null && ((Hero) target).hasTalent(Talent.ENDURANCE) && buff.isNormal()) {
 					shield *= 1+buff.getPower()*((Hero) target).pointsInTalent(Talent.ENDURANCE);
+				}
+				if (Dungeon.hero.belongings.getItem(BerserkerSeal.class) != null ||
+						Dungeon.hero.belongings.getItem(VeteranSeal.class) != null ||
+						Dungeon.hero.belongings.getItem(GladiatorSeal.class) != null){
+					shield /= 2f;
 				}
 				partialShield += shield;
 			}
@@ -278,4 +291,5 @@ public class BrokenSeal extends Item {
 			return dmg;
 		}
 	}
+
 }

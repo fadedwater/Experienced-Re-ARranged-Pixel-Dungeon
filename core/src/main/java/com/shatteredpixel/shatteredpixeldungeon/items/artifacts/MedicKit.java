@@ -19,6 +19,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.pills.PillOfAwakening;
@@ -88,7 +89,7 @@ public class MedicKit extends Artifact {
         super.execute(hero, action);
 
         if (action.equals(AC_ADD)){
-            GameScene.selectItem( itemSelector );
+            DewUpgrade();
         }
         if (action.equals(AC_USE)) {
             useKit(hero);
@@ -110,15 +111,20 @@ public class MedicKit extends Artifact {
         updateQuickslot();
     }
 
+    private void DewUpgrade(){
+        Waterskin waterskin = Dungeon.hero.belongings.getItem(Waterskin.class);
+        if (waterskin != null && waterskin.CurDew() >= 2 * (level()+1)){
+            waterskin.DewCast(2 * (level()+1));
+            onUpgrade(1,this);
+        }
+        else{
+            GLog.w(Messages.get(MedicKit.class, "no_dew",2+2*level()));
+        }
+    }
+
     @Override
     public String info() {
         String info = super.info();
-
-        if (cursed && cursedKnown && !isEquipped( Dungeon.hero )) {
-            info += "\n\n" + Messages.get(Artifact.class, "curse_known");
-        } else if (!isIdentified() && cursedKnown && !isEquipped( Dungeon.hero)) {
-            info += "\n\n" + Messages.get(Artifact.class, "not_cursed");
-        }
 
         if (!cursed && isEquipped( Dungeon.hero )) {
             info += "\n\n" + Messages.get(this, "use_desc", healAmt());
@@ -144,7 +150,7 @@ public class MedicKit extends Artifact {
             if (Dungeon.hero.buff(MedicKitBuff.class) != null) {
                 Dungeon.hero.buff(MedicKitBuff.class).updateImmunity();
             }
-            item.detach(Dungeon.hero.belongings.backpack);
+            //item.detach(Dungeon.hero.belongings.backpack);
             Dungeon.hero.sprite.operate(Dungeon.hero.pos);
             Dungeon.hero.spendAndNext(Actor.TICK);
             Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
@@ -195,6 +201,8 @@ public class MedicKit extends Artifact {
         }
         return desc;
     }
+
+
 
     protected WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
 

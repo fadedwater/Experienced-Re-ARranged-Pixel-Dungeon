@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
@@ -232,7 +233,7 @@ public class RingOfWealth extends Ring {
 	}
 
 	private static Item genMidValueConsumable(){
-		switch (Random.Int(6)){
+		switch (Random.Int(7)){
 			case 0: default:
 				Item i = genLowValueConsumable();
 				return i.quantity(i.quantity()*2);
@@ -256,11 +257,13 @@ public class RingOfWealth extends Ring {
 				return new Bomb();
 			case 5:
 				return new Honeypot();
+			case 7:
+				return new ScrollOfUpgrade();
 		}
 	}
 
 	private static Item genHighValueConsumable(){
-		switch (Random.Int(4)){
+		switch (Random.Int(5)){
 			case 0: default:
 				Item i = genMidValueConsumable();
 				if (i instanceof Bomb){
@@ -274,6 +277,8 @@ public class RingOfWealth extends Ring {
 				return Random.Float() < ExoticCrystals.consumableExoticChance() ? new PotionOfDivineInspiration() : new PotionOfExperience();
 			case 3:
 				return Random.Float() < ExoticCrystals.consumableExoticChance() ? new ScrollOfMetamorphosis() : new ScrollOfTransmutation();
+			case 4:
+				return new ScrollOfUpgrade();
 		}
 	}
 
@@ -310,6 +315,7 @@ public class RingOfWealth extends Ring {
 		}
 		result.cursed = false;
 		result.cursedKnown = true;
+		result.identify();
 		if (result.level() >= 2) {
 			latestDropTier = 4;
 		} else {

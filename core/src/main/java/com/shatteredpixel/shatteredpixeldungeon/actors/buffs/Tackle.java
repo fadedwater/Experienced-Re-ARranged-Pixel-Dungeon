@@ -30,7 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SmokeParticle;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.NewSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -155,8 +155,8 @@ public class Tackle extends FlavourBuff implements ActionIndicator.Action {
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 				}
 
-				if (hero.buff(BrokenSeal.WarriorShield.class) != null) {
-					BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
+				if (hero.buff(NewSeal.WarriorShield.class) != null) {
+					NewSeal.WarriorShield shield = hero.buff(NewSeal.WarriorShield.class);
 					int amount = shield.shielding()+1;
 					if (hero.hasTalent(Talent.IMPROVED_TACKLE)) amount++;
 					shield.supercharge(Math.min(shield.maxShield(), amount));

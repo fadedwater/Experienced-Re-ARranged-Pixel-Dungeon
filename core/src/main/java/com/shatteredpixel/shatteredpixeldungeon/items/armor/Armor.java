@@ -38,7 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.NewSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -131,7 +131,7 @@ public class Armor extends EquipableItem {
 	public boolean curseInfusionBonus = false;
 	public boolean masteryPotionBonus = false;
 	
-	protected BrokenSeal seal;
+	protected NewSeal seal;
 	
 	public int tier;
 	
@@ -174,7 +174,7 @@ public class Armor extends EquipableItem {
 		glyphHardened = bundle.getBoolean(GLYPH_HARDENED);
 		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 		masteryPotionBonus = bundle.getBoolean( MASTERY_POTION_BONUS );
-		seal = (BrokenSeal)bundle.get(SEAL);
+		seal = (NewSeal)bundle.get(SEAL);
 		
 		augment = bundle.getEnum(AUGMENT, Augment.class);
 	}
@@ -204,14 +204,16 @@ public class Armor extends EquipableItem {
 		super.execute(hero, action);
 
 		if (action.equals(AC_DETACH) && seal != null){
-			BrokenSeal.WarriorShield sealBuff = hero.buff(BrokenSeal.WarriorShield.class);
+			NewSeal.WarriorShield sealBuff = hero.buff(NewSeal.WarriorShield.class);
 			if (sealBuff != null) sealBuff.setArmor(null);
 
-			BrokenSeal detaching = seal;
+			NewSeal detaching = seal;
 			seal = null;
 
 			if (detaching.level() > 0){
-				degrade();
+				int truelvl = level();
+				truelvl -= detaching.level();
+				level(truelvl);
 			}
 			if (detaching.canTransferGlyph()){
 				inscribe(null);
@@ -342,14 +344,14 @@ public class Armor extends EquipableItem {
 
 	@Override
 	public void activate(Char ch) {
-		if (seal != null) Buff.affect(ch, BrokenSeal.WarriorShield.class).setArmor(this);
+		if (seal != null) Buff.affect(ch, NewSeal.WarriorShield.class).setArmor(this);
 	}
 
-	public void affixSeal(BrokenSeal seal){
+	public void affixSeal(NewSeal seal){
 		this.seal = seal;
 		if (seal.level() > 0){
 			//doesn't trigger upgrading logic such as affecting curses/glyphs
-			int newLevel = trueLevel()+1;
+			int newLevel = trueLevel()+seal.level();
 			level(newLevel);
 			Badges.validateItemLevelAquired(this);
 		}
@@ -357,11 +359,11 @@ public class Armor extends EquipableItem {
 			inscribe(seal.getGlyph());
 		}
 		if (isEquipped(Dungeon.hero)){
-			Buff.affect(Dungeon.hero, BrokenSeal.WarriorShield.class).setArmor(this);
+			Buff.affect(Dungeon.hero, NewSeal.WarriorShield.class).setArmor(this);
 		}
 	}
 
-	public BrokenSeal checkSeal(){
+	public NewSeal checkSeal(){
 		return seal;
 	}
 
@@ -372,7 +374,7 @@ public class Armor extends EquipableItem {
 			hero.belongings.armor = null;
 			((HeroSprite)hero.sprite).updateArmor();
 
-			BrokenSeal.WarriorShield sealBuff = hero.buff(BrokenSeal.WarriorShield.class);
+			NewSeal.WarriorShield sealBuff = hero.buff(NewSeal.WarriorShield.class);
 			if (sealBuff != null) sealBuff.setArmor(null);
 
 			return true;
@@ -612,7 +614,7 @@ public class Armor extends EquipableItem {
 		
 		cursed = false;
 
-		if (seal != null && seal.level() == 0)
+		if (seal != null && seal.level() <= 3)
 			seal.upgrade();
 
 		return super.upgrade();
@@ -709,7 +711,8 @@ public class Armor extends EquipableItem {
 		}
 
 		if (seal != null) {
-			info += "\n\n" + Messages.get(Armor.class, "seal_attached", seal.maxShield(tier, level()));
+				info += "\n\n" + Messages.get(Armor.class, "warrior_seal_attached", seal.maxShield(tier, level()));
+
 		}
 		
 		return info;

@@ -25,7 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.NewSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.BulletBelt;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
@@ -251,7 +251,7 @@ public enum Catalog {
 
 		TRINKETS.addItems(Generator.Category.TRINKET.classes);
 
-		MISC_EQUIPMENT.addItems(BrokenSeal.class, KnightsShield.class,
+		MISC_EQUIPMENT.addItems(NewSeal.class, KnightsShield.class,
 				SpiritBow.class, WindBow.class, TacticalBow.class, GoldenBow.class, NaturesBow.class, CorrosiveBow.class,
 				Sheath.class, GammaRayGun.class,
 				Waterskin.class, VelvetPouch.class, PotionBandolier.class, ScrollHolder.class, MagicalHolster.class,

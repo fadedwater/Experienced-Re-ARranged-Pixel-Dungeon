@@ -27,7 +27,7 @@ public class SoulCollect extends Buff {
 
     public void killMob(Mob enemy) {
         int maxSouls = maxSouls();
-        if (Dungeon.hero.lvl <= enemy.maxLvl + 2 || Dungeon.hero.buff(AscensionChallenge.class) != null) {
+        if (Dungeon.hero.lvl <= enemy.maxLvl + 200 || Dungeon.hero.buff(AscensionChallenge.class) != null) {
             souls = Math.min(++souls, maxSouls);
         }
 

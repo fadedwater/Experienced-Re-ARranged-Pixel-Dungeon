@@ -28,7 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.NewSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -276,7 +276,7 @@ public class WndBlacksmith extends Window {
 					second.detach( Dungeon.hero.belongings.backpack );
 
 					if (second instanceof Armor){
-						BrokenSeal seal = ((Armor) second).checkSeal();
+						NewSeal seal = ((Armor) second).checkSeal();
 						if (seal != null){
 							Dungeon.level.drop( seal, Dungeon.hero.pos );
 						}

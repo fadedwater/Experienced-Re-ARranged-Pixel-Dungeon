@@ -87,10 +87,6 @@ public class GammaRayGun extends Item {
         @Override
         public void onSelect( Integer target ) {
             if (target != null) {
-                if (target == curUser.pos) {
-                    GLog.w(Messages.get(this, "cannot_self"));
-                    return;
-                } else {
                     Ballistica beam = new Ballistica(curUser.pos, target, Ballistica.PROJECTILE);
                     Char ch = Actor.findChar(beam.collisionPos);
                     if (ch != null) {
@@ -136,7 +132,7 @@ public class GammaRayGun extends Item {
                                 }
                             }
                         }
-                        if (ch.alignment == Char.Alignment.ALLY && (ch != curUser)) {
+                        if (ch.alignment == Char.Alignment.ALLY) {
                             int healAmt = Math.round((5f+curUser.lvl/2f)*powerMulti());
                             if (hero.hasTalent(Talent.MEDICAL_RAY)) {
                                 healAmt = Math.round(healAmt * (1f + 0.2f * hero.pointsInTalent(Talent.MEDICAL_RAY)));
@@ -156,7 +152,7 @@ public class GammaRayGun extends Item {
                     }
                     curUser.sprite.zap(target);
                     curUser.sprite.parent.add( new Beam.GreenRay(curUser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(beam.collisionPos)) );
-                }
+
                 if (curUser.buff(GammaRayCooldown.class) != null) {
                     if (curUser.buff(Poison.class) != null) {
                         Buff.affect(curUser, Poison.class).extend(5+Math.round(curUser.lvl/2f));

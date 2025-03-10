@@ -136,7 +136,7 @@ public abstract class Mob extends Char {
 	public int defenseSkill = 0;
 	
 	public int EXP = 1;
-	public int maxLvl = Hero.MAX_LEVEL-1;
+	public int maxLvl = Hero.MAX_LEVEL;
 	
 	protected Char enemy;
 	protected int enemyID = -1; //used for save/restore
@@ -831,7 +831,7 @@ public abstract class Mob extends Char {
 
 				AscensionChallenge.processEnemyKill(this);
 				
-				int exp = Dungeon.hero.lvl <= maxLvl ? EXP : 0;
+				int exp = Dungeon.hero.lvl <= maxLvl ? EXP : EXP;
 
 				//during ascent, under-levelled enemies grant 10 xp each until level 30
 				// after this enemy kills which reduce the amulet curse still grant 10 effective xp
@@ -1007,7 +1007,7 @@ public abstract class Mob extends Char {
 	}
 	
 	public void rollToDropLoot(){
-		if (Dungeon.hero.lvl > maxLvl + 2) return;
+		if (Dungeon.hero.lvl > maxLvl + 200) return;
 
 		MasterThievesArmband.StolenTracker stolen = buff(MasterThievesArmband.StolenTracker.class);
 		if (stolen == null || !stolen.itemWasStolen()) {

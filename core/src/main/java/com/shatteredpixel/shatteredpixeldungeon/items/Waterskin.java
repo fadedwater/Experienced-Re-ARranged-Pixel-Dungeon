@@ -186,6 +186,14 @@ public class Waterskin extends Item {
 		updateQuickslot();
 	}
 
+	public int CurDew(){
+		return volume;
+	}
+
+	public void DewCast(int cast){
+		volume -= cast;
+	}
+
 	@Override
 	public boolean isUpgradable() {
 		return false;

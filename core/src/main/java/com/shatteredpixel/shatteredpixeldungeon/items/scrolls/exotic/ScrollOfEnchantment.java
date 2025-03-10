@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Enchanting;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KnightsShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.InventoryScroll;
@@ -68,7 +69,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 	}
 
 	public static boolean enchantable( Item item ){
-		return (item instanceof MeleeWeapon || item instanceof SpiritBow || item instanceof Armor);
+		return (item instanceof MeleeWeapon || item instanceof SpiritBow || item instanceof Armor || item instanceof KnightsShield);
 	}
 
 	private void confirmCancelation() {
@@ -112,11 +113,11 @@ public class ScrollOfEnchantment extends ExoticScroll {
 
 		@Override
 		public void onSelect(final Item item) {
+			if (!identifiedByUse) {
+				curItem.detach(curUser.belongings.backpack);
+			}
 			
 			if (item instanceof Weapon){
-				if (!identifiedByUse) {
-					curItem.detach(curUser.belongings.backpack);
-				}
 				identifiedByUse = false;
 				
 				final Weapon.Enchantment enchants[] = new Weapon.Enchantment[3];
@@ -129,9 +130,6 @@ public class ScrollOfEnchantment extends ExoticScroll {
 				GameScene.show(new WndEnchantSelect((Weapon) item, enchants[0], enchants[1], enchants[2]));
 			
 			} else if (item instanceof Armor) {
-				if (!identifiedByUse) {
-					curItem.detach(curUser.belongings.backpack);
-				}
 				identifiedByUse = false;
 				
 				final Armor.Glyph glyphs[] = new Armor.Glyph[3];
@@ -142,8 +140,18 @@ public class ScrollOfEnchantment extends ExoticScroll {
 				glyphs[2] = Armor.Glyph.random( existing, glyphs[0].getClass(), glyphs[1].getClass());
 				
 				GameScene.show(new WndGlyphSelect((Armor) item, glyphs[0], glyphs[1], glyphs[2]));
-			} else if (identifiedByUse){
-				((ScrollOfEnchantment)curItem).confirmCancelation();
+			}
+			else if (item instanceof KnightsShield) {
+				identifiedByUse = false;
+
+				final Armor.Glyph glyphs[] = new Armor.Glyph[3];
+
+				Class<? extends Armor.Glyph> existing = ((KnightsShield) item).glyph != null ? ((KnightsShield) item).glyph.getClass() : null;
+				glyphs[0] = Armor.Glyph.randomCommon( existing );
+				glyphs[1] = Armor.Glyph.randomUncommon( existing );
+				glyphs[2] = Armor.Glyph.random( existing, glyphs[0].getClass(), glyphs[1].getClass());
+
+				GameScene.show(new WndKsdGlyphSelect((KnightsShield) item, glyphs[0], glyphs[1], glyphs[2]));
 			}
 		}
 	};
@@ -243,6 +251,67 @@ public class ScrollOfEnchantment extends ExoticScroll {
 
 				Sample.INSTANCE.play(Assets.Sounds.READ);
 				Enchanting.show(curUser, arm);
+			} else {
+				GameScene.show(new WndConfirmCancel());
+			}
+		}
+
+		@Override
+		protected boolean hasInfo(int index) {
+			return index < 3;
+		}
+
+		@Override
+		protected void onInfo(int index) {
+			GameScene.show(new WndTitledMessage(
+					Icons.get(Icons.INFO),
+					Messages.titleCase(glyphs[index].name()),
+					glyphs[index].desc()));
+		}
+
+		@Override
+		public void onBackPressed() {
+			//do nothing, reader has to cancel
+		}
+
+	}
+
+	public static class WndKsdGlyphSelect extends WndOptions {
+
+		private static KnightsShield Ksd;
+		private static Armor.Glyph[] glyphs;
+
+		//used in PixelScene.restoreWindows
+		public WndKsdGlyphSelect() {
+			this(Ksd, glyphs[0], glyphs[1], glyphs[2]);
+		}
+
+		public WndKsdGlyphSelect(KnightsShield Ksd, Armor.Glyph glyph1,
+							  Armor.Glyph glyph2, Armor.Glyph glyph3) {
+			super(new ItemSprite(new ScrollOfEnchantment()),
+					Messages.titleCase(new ScrollOfEnchantment().name()),
+					Messages.get(ScrollOfEnchantment.class, "knights_shield"),
+					glyph1.name(),
+					glyph2.name(),
+					glyph3.name(),
+					Messages.get(ScrollOfEnchantment.class, "cancel"));
+			this.Ksd = Ksd;
+			glyphs = new Armor.Glyph[3];
+			glyphs[0] = glyph1;
+			glyphs[1] = glyph2;
+			glyphs[2] = glyph3;
+		}
+
+		@Override
+		protected void onSelect(int index) {
+			if (index < 3) {
+				Ksd.inscribe(false);
+				Ksd.glyph = glyphs[index];
+				GLog.p(Messages.get(StoneOfEnchantment.class, "knights_shield"));
+				((ScrollOfEnchantment) curItem).readAnimation();
+
+				Sample.INSTANCE.play(Assets.Sounds.READ);
+				Enchanting.show(curUser, Ksd);
 			} else {
 				GameScene.show(new WndConfirmCancel());
 			}

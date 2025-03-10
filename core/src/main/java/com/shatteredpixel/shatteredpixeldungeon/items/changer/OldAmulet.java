@@ -3,16 +3,16 @@ package com.shatteredpixel.shatteredpixeldungeon.items.changer;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.BerserkerSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.NewSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
@@ -22,6 +22,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Saddle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.GladiatorSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.VeteranSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.bow.CorrosiveBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.bow.GoldenBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.bow.NaturesBow;
@@ -40,16 +42,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.gun.Gun;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -158,6 +157,8 @@ public class OldAmulet extends Item {
             return changeMachete((Machete)item);
         } else if (item instanceof KnightsShield) {
             return changeShield();
+        } else if (item instanceof NewSeal){
+            return changeSeal();
         } else {
             return null;
         }
@@ -278,6 +279,28 @@ public class OldAmulet extends Item {
         return newItem;
     }
 
+    private static Item changeSeal(){
+        Item newItem;
+        switch (Dungeon.hero.subClass){
+            case BERSERKER:
+                newItem = new BerserkerSeal();
+                new BrokenSeal().collect();
+                break;
+            case GLADIATOR:
+                newItem = new GladiatorSeal();
+                new BrokenSeal().collect();
+                break;
+            case VETERAN:
+                newItem = new VeteranSeal();
+                new BrokenSeal().collect();
+                break;
+            default:
+                newItem = null;
+                break;
+        }
+        return newItem;
+    }
+
     protected void onItemSelected(Item item) {
         Item result = changeItem(item);
 
@@ -366,7 +389,7 @@ public class OldAmulet extends Item {
             if (!item.isIdentified()) return false;
             switch (Dungeon.hero.heroClass) {
                 case WARRIOR: default:
-                    return item instanceof BrokenSeal;
+                    return item instanceof NewSeal;
                 case MAGE:
                     return item instanceof MagesStaff;
                 case ROGUE:

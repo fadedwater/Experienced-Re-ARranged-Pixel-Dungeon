@@ -30,7 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.NewSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -421,8 +421,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 							ch.sprite.flash();
 
 							if (!ch.isAlive()) {
-								if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null) {
-									BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
+								if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(NewSeal.WarriorShield.class) != null) {
+									NewSeal.WarriorShield shield = hero.buff(NewSeal.WarriorShield.class);
 									int shieldAmt = Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE) / 3f);
 									shield.supercharge(shieldAmt);
 									hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldAmt), FloatingText.SHIELDING);
@@ -478,8 +478,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		}
 
 		if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
-			if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(BrokenSeal.WarriorShield.class) != null){
-				BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
+			if (hero.hasTalent(Talent.LETHAL_DEFENSE) && hero.buff(NewSeal.WarriorShield.class) != null){
+				NewSeal.WarriorShield shield = hero.buff(NewSeal.WarriorShield.class);
 				int shieldAmt = Math.round(shield.maxShield() * hero.pointsInTalent(Talent.LETHAL_DEFENSE) / 3f);
 				shield.supercharge(shieldAmt);
 				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldAmt), FloatingText.SHIELDING);

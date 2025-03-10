@@ -179,6 +179,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.GladiatorSeal;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.VeteranSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.spellbook.SpellBook;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.BrokenMagnifyingGlass;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Necklace;
@@ -684,6 +686,11 @@ public class Hero extends Char {
 
 		if (hero.buff(Sheath.Sheathing.class) != null) {
 			accuracy *= 1.2f;
+		}
+
+		GladiatorSeal glaafx = hero.belongings.getItem(GladiatorSeal.class);
+		if (glaafx != null){
+			accuracy *= glaafx.AimFactor();
 		}
 
 		if (hero.buff(UnholyBible.Demon.class) != null) {
@@ -2456,6 +2463,12 @@ public class Hero extends Char {
 			dmg = thorns.proc(dmg, (src instanceof Char ? (Char)src : null),  this);
 		}
 
+		VeteranSeal vetdef = hero.belongings.getItem(VeteranSeal.class);
+		if (vetdef != null){
+			dmg *= (int)Math.ceil(vetdef.ResisFactor());
+		//(int)Math.ceil(dmg * (1 - (0.05f * 1 + vetdef.itemLevel())));
+		}
+		//TODO fix after test finished
 		//~17%/~33% damage reduction, proportional to hero's lost health
 		if (hero.hasTalent(Talent.PROTECTION)) {
 			dmg = (int)Math.ceil(dmg * (1 - hero.pointsInTalent(Talent.PROTECTION)/6f * ((float)(this.HT - this.HP)/this.HT)));
@@ -3068,7 +3081,7 @@ public class Hero extends Char {
 			interrupt();
 
 			if (ankh.isBlessed()) {
-				this.HP = HT / 4;
+				this.HP = HT;
 
 				PotionOfHealing.cure(this);
 				Buff.prolong(this, Invulnerability.class, Invulnerability.DURATION);

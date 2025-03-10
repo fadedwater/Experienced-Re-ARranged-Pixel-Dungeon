@@ -85,7 +85,7 @@ public class BulletBelt extends Item {
 
 		{
 			inputs =  new Class[]{LiquidMetal.class};
-			inQuantity = new int[]{50};
+			inQuantity = new int[]{30};
 
 			cost = 5;
 

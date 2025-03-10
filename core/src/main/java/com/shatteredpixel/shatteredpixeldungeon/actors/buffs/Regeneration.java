@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MedicKit;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.seals.BerserkerSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
 
@@ -82,11 +83,16 @@ public class Regeneration extends Buff {
 					delay /= RingOfEnergy.artifactChargeMultiplier(target);
 				}
 			}
+
 			if (((Hero)target).hasTalent(Talent.STRONG_HEALPOWER)) {
 				delay /= 1f+0.1f*((Hero)target).pointsInTalent(Talent.STRONG_HEALPOWER);
 			}
 			if (((Hero)target).hasTalent(Talent.ACCUMULATION) && ((Hero) target).heroClass != HeroClass.DUELIST) {
 				delay /= 1f+0.1f*((Hero)target).pointsInTalent(Talent.ACCUMULATION);
+			}
+			if (Dungeon.hero.belongings.getItem(BerserkerSeal.class) != null){
+				BerserkerSeal berseal = Dungeon.hero.belongings.getItem(BerserkerSeal.class);
+				delay /= berseal.RegenFactor();
 			}
 
 			delay /= SaltCube.healthRegenMultiplier();
